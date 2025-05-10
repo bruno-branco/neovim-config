@@ -15,6 +15,9 @@ vim.keymap.set("n", "<leader>sw", "yiw/<C-r>0<CR>")
 --solve git conflicts
 vim.keymap.set("n", "<leader>gc", ":Gvdiffsplit!<CR>")
 
+--best remap ever
+vim.keymap.set("x", "<leader>p", '"_dP')
+
 --open and close terminal
 vim.keymap.set("n", "<leader>ot", "<C-w><C-v>:terminal<CR>")
 

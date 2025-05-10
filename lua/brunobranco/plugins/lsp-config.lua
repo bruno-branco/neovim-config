@@ -20,9 +20,25 @@ return {
 			-- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
-			lspconfig.lua_ls.setup({
-				capabilities = capabilities,
-			})
+			--
+			-- List of LSPs to set up
+			local servers = {
+				"lua_ls",
+				"gopls",
+				"tailwindcss",
+				"pyright",
+				"html",
+				"tailwindcss",
+				"rust_analyzer",
+			}
+
+			-- Set up LSPs with capabilities
+			for _, server in ipairs(servers) do
+				lspconfig[server].setup({
+					capabilities = capabilities,
+				})
+			end
+
 			lspconfig.denols.setup({
 				capabilities = capabilities,
 				root_dir = lspconfig.util.root_pattern("deno.json", "import_map.json"),
