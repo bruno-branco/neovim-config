@@ -1,12 +1,14 @@
 return {
 	{
-		"williamboman/mason.nvim",
+		"mason-org/mason.nvim",
+		version = "^1.0.0",
 		config = function()
 			require("mason").setup({})
 		end,
 	},
 	{
-		"williamboman/mason-lspconfig.nvim",
+		"mason-org/mason-lspconfig.nvim",
+		version = "^1.0.0",
 		config = function()
 			require("mason-lspconfig").setup({
 				auto_install = true,
@@ -73,7 +75,7 @@ return {
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
 				root_dir = lspconfig.util.root_pattern("package.json"),
-				single_file_support = false,
+				single_file_support = true,
 			})
 			lspconfig.golangci_lint_ls.setup({
 				capabilities = capabilities,

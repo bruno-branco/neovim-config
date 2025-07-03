@@ -66,6 +66,7 @@ return {
 				{ desc = "Find string under cursor in cwd" }
 			)
 			keymap.set("n", "<leader>ft", "<cmd>TodoTelescope<cr>", { desc = "Find todos" })
+			keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>", { desc = "Show buffers" })
 		end,
 	},
 	{

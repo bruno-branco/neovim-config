@@ -12,8 +12,9 @@ vim.keymap.set("n", "N", "Nzzzv")
 --find word under cursos inside document
 vim.keymap.set("n", "<leader>sw", "yiw/<C-r>0<CR>")
 
---solve git conflicts
-vim.keymap.set("n", "<leader>gc", ":Gvdiffsplit!<CR>")
+--open lazy git
+-- vim.keymap.set("n", "<leader>gc", ":Gvdiffsplit!<CR>")
+vim.keymap.set("n", "<leader>lg", ":Lazygit<CR>")
 
 --best remap ever
 vim.keymap.set("x", "<leader>p", '"_dP')
@@ -24,6 +25,7 @@ vim.keymap.set("n", "<leader>ot", "<C-w><C-v>:terminal<CR>")
 --let it snow!!
 vim.keymap.set("n", "<leader>lis", ":LetItSnow<CR>")
 vim.keymap.set("n", "<leader>sts", ":EndHygge<CR>")
+vim.keymap.set("n", "<C-1>", ":b# <CR>")
 
 --open error window lsp
 vim.keymap.set("n", "<leader>le", ":LspDiagnosticsError<CR>")
