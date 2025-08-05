@@ -25,7 +25,7 @@ vim.keymap.set("n", "<leader>ot", "<C-w><C-v>:terminal<CR>")
 --let it snow!!
 vim.keymap.set("n", "<leader>lis", ":LetItSnow<CR>")
 vim.keymap.set("n", "<leader>sts", ":EndHygge<CR>")
-vim.keymap.set("n", "<C-1>", ":b# <CR>")
+vim.keymap.set("n", "<C-b>", ":b#<CR>")
 
 --open error window lsp
 vim.keymap.set("n", "<leader>le", ":LspDiagnosticsError<CR>")
@@ -33,6 +33,14 @@ vim.keymap.set("n", "<leader>lw", ":LspDiagnosticsWarning<CR>")
 vim.keymap.set("n", "<leader>li", ":LspDiagnosticsInformation<CR>")
 vim.keymap.set("n", "<leader>lc", ":LspDiagnosticsHint<CR>")
 vim.keymap.set("n", "<leader>la", ":LspDiagnosticsToggle<CR>")
+
+--copy current buffer dir
+vim.keymap.set(
+	"n",
+	"<leader>yd",
+	[[:let @+ = expand('%:h')<CR>]],
+	{ noremap = true, silent = true, desc = "Copy file directory" }
+)
 
 -- open lsp message in buffer
 vim.keymap.set("n", "<space>le", function()

@@ -28,6 +28,9 @@ return {
 						-- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
 					end,
 				},
+				completion = {
+					autocomplete = false,
+				},
 				window = {
 					completion = cmp.config.window.bordered(),
 					documentation = cmp.config.window.bordered(),

@@ -1,8 +1,5 @@
 return {
 	{
-		"tpope/vim-fugitive",
-	},
-	{
 		"kdheepak/lazygit.nvim",
 		lazy = true,
 		cmd = {
