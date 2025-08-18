@@ -5,13 +5,50 @@ return {
 		"nvim-lua/plenary.nvim",
 	},
 	config = function()
-		require("harpoon").setup()
-
 		local harpoon = require("harpoon")
+		harpoon.setup()
+
+		--open terminal
+		-- vim.keymap.set("n", "<leader>ot", "<C-w><C-v>:terminal<CR>")
+
+		vim.keymap.set("n", "<leader>ot", function()
+			vim.cmd("vsplit | terminal")
+			harpoon:list():replace_at(9) --for list id 9
+		end)
+
+		vim.api.nvim_create_user_command("KillTerm", function()
+			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+				local name = vim.api.nvim_buf_get_name(buf)
+				if name:match("^term://") then
+					vim.api.nvim_buf_delete(buf, { force = true })
+				end
+			end
+		end, {})
+
+		harpoon:extend({
+			UI_CREATE = function(cx)
+				vim.keymap.set("n", "<C-v>", function()
+					harpoon.ui:select_menu_item({ vsplit = true })
+				end, { buffer = cx.bufnr })
+
+				vim.keymap.set("n", "<C-x>", function()
+					harpoon.ui:select_menu_item({ split = true })
+				end, { buffer = cx.bufnr })
+
+				vim.keymap.set("n", "<C-t>", function()
+					harpoon.ui:select_menu_item({ tabedit = true })
+				end, { buffer = cx.bufnr })
+			end,
+		})
 
 		vim.keymap.set("n", "<leader>a", function()
 			harpoon:list():add()
 		end)
+
+		vim.keymap.set("n", "<leader>c", function()
+			harpoon:list():clear()
+		end)
+
 		vim.keymap.set("n", "<leader>h", function()
 			harpoon.ui:toggle_quick_menu(harpoon:list())
 		end)
@@ -27,6 +64,29 @@ return {
 		end)
 		vim.keymap.set("n", "<leader>4", function()
 			harpoon:list():select(4)
+		end)
+
+		vim.keymap.set("n", "<leader>9", function()
+			local harpoon = require("harpoon")
+			local item = harpoon:list():get(9)
+			if not item or not item.value then
+				vim.notify("No terminal registered in slot 9", vim.log.levels.WARN)
+				return
+			end
+
+			-- Try to find the buffer by name
+			local bufnr = vim.fn.bufnr(item.value)
+			if bufnr == -1 then
+				-- Buffer doesn't exist, spawn a new terminal
+				vim.cmd("vsplit | terminal")
+				-- Update Harpoon slot 9 with the new buffer name
+				local new_bufname = vim.api.nvim_buf_get_name(0)
+				harpoon:list():replace_at(9, { value = new_bufname, context = {} })
+			else
+				-- Buffer exists, open it in a vsplit
+				vim.cmd("vsplit")
+				vim.api.nvim_set_current_buf(bufnr)
+			end
 		end)
 
 		-- Toggle previous & next buffers stored within Harpoon list

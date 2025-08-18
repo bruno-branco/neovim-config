@@ -19,9 +19,6 @@ vim.keymap.set("n", "<leader>lg", ":Lazygit<CR>")
 --best remap ever
 vim.keymap.set("x", "<leader>p", '"_dP')
 
---open and close terminal
-vim.keymap.set("n", "<leader>ot", "<C-w><C-v>:terminal<CR>")
-
 --let it snow!!
 vim.keymap.set("n", "<leader>lis", ":LetItSnow<CR>")
 vim.keymap.set("n", "<leader>sts", ":EndHygge<CR>")

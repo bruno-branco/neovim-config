@@ -12,7 +12,7 @@ return {
 		config = function()
 			require("mason-lspconfig").setup({
 				auto_install = true,
-				ensure_installed = { "lua_ls", "ts_ls", "golangci_lint_ls", "denols" },
+				ensure_installed = { "lua_ls", "ts_ls", "golangci_lint_ls", "denols", "prismals" },
 			})
 		end,
 	},
@@ -32,6 +32,8 @@ return {
 				"html",
 				"tailwindcss",
 				"rust_analyzer",
+				"prismals",
+				"omnisharp",
 			}
 
 			-- Set up LSPs with capabilities
