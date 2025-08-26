@@ -1,9 +1,18 @@
 return {
 	{
+		"seblyng/roslyn.nvim",
+		ft = "cs",
+		opts = {
+			filewatching = "roslyn",
+		},
+	},
+	{
 		"mason-org/mason.nvim",
-		version = "^1.0.0",
+		version = "^2.0.0",
 		config = function()
-			require("mason").setup({})
+			require("mason").setup({
+				registries = { "github:Crashdummyy/mason-registry", "github:mason-org/mason-registry" },
+			})
 		end,
 	},
 	{
@@ -12,7 +21,7 @@ return {
 		config = function()
 			require("mason-lspconfig").setup({
 				auto_install = true,
-				ensure_installed = { "lua_ls", "ts_ls", "golangci_lint_ls", "denols", "prismals" },
+				ensure_installed = { "lua_ls", "ts_ls", "golangci_lint_ls", "denols", "prismals", "eslint" },
 			})
 		end,
 	},
@@ -22,26 +31,79 @@ return {
 			-- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
+
+			lspconfig.ts_ls.setup({
+				capabilities = capabilities,
+				root_dir = lspconfig.util.root_pattern("package.json"),
+				single_file_support = true,
+				handlers = {
+					["textDocument/publishDiagnostics"] = function(_, result, ctx, config)
+						if result.diagnostics == nil then
+							return
+						end
+
+						-- ignore some tsserver diagnostics
+						local idx = 1
+						while idx <= #result.diagnostics do
+							local entry = result.diagnostics[idx]
+
+							local formatter = require("format-ts-errors")[entry.code]
+							entry.message = formatter and formatter(entry.message) or entry.message
+
+							-- codes: https://github.com/microsoft/TypeScript/blob/main/src/compiler/diagnosticMessages.json
+							if entry.code == 80001 then
+								-- { message = "File is a CommonJS module; it may be converted to an ES module.", }
+								table.remove(result.diagnostics, idx)
+							else
+								idx = idx + 1
+							end
+						end
+
+						vim.lsp.diagnostic.on_publish_diagnostics(_, result, ctx, config)
+					end,
+				},
+			})
+
 			--
 			-- List of LSPs to set up
 			local servers = {
-				"lua_ls",
-				"gopls",
+				-- "lua_ls",
+				-- "gopls",
 				"tailwindcss",
-				"pyright",
-				"html",
-				"tailwindcss",
-				"rust_analyzer",
+				-- "pyright",
+				-- "html",
+				-- "tailwindcss",
+				-- "rust_analyzer",
 				"prismals",
-				"omnisharp",
+				-- "roslyn",
 			}
 
+			require("lspconfig").eslint.setup({
+				on_attach = function(client, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "EslintFixAll",
+					})
+				end,
+			})
 			-- Set up LSPs with capabilities
 			for _, server in ipairs(servers) do
 				lspconfig[server].setup({
 					capabilities = capabilities,
 				})
 			end
+
+			lspconfig.omnisharp.setup({
+				capabilities = capabilities,
+				cmd = {
+					"dotnet",
+					vim.fn.stdpath("data") .. "/mason/packages/omnisharp/libexec/OmniSharp.dll",
+					"--languageserver",
+					"--hostPID",
+					tostring(vim.fn.getpid()),
+				},
+				root_dir = lspconfig.util.root_pattern("*.sln"),
+			})
 
 			lspconfig.denols.setup({
 				capabilities = capabilities,
@@ -73,11 +135,6 @@ return {
 			})
 			lspconfig.golangci_lint_ls.setup({
 				capabilities = capabilities,
-			})
-			lspconfig.ts_ls.setup({
-				capabilities = capabilities,
-				root_dir = lspconfig.util.root_pattern("package.json"),
-				single_file_support = true,
 			})
 			lspconfig.golangci_lint_ls.setup({
 				capabilities = capabilities,

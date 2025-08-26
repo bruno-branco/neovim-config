@@ -20,7 +20,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 --hlsearch and incsearch
-vim.opt.hlsearch = true
+vim.opt.hlsearch = false
 vim.opt.incsearch = true
 
 --colors
