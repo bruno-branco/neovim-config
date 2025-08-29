@@ -7,6 +7,16 @@ return {
 		},
 	},
 	{
+		"mason-org/mason-lspconfig.nvim",
+		version = "^1.0.0",
+		config = function()
+			require("mason-lspconfig").setup({
+				auto_install = true,
+				ensure_installed = { "ts_ls", "lua_ls" },
+			})
+		end,
+	},
+	{
 		"mason-org/mason.nvim",
 		version = "^2.0.0",
 		config = function()
@@ -16,21 +26,41 @@ return {
 		end,
 	},
 	{
-		"mason-org/mason-lspconfig.nvim",
-		version = "^1.0.0",
-		config = function()
-			require("mason-lspconfig").setup({
-				auto_install = true,
-				ensure_installed = { "lua_ls", "ts_ls", "golangci_lint_ls", "denols", "prismals", "eslint" },
-			})
-		end,
-	},
-	{
 		"neovim/nvim-lspconfig",
 		config = function()
 			-- The nvim-cmp almost supports LSP's capabilities so You should advertise it to LSP servers..
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			local lspconfig = require("lspconfig")
+			-- List of LSPs to set up
+			local servers = {
+				-- "lua_ls",
+				-- "gopls",
+				"tailwindcss",
+				-- "pyright",
+				"html",
+				-- "tailwindcss",
+				-- "rust_analyzer",
+				"prismals",
+				-- "roslyn",
+			}
+
+			for _, server in ipairs(servers) do
+				lspconfig[server].setup({
+					capabilities = capabilities,
+				})
+			end
+
+			----------
+
+			require("lspconfig").eslint.setup({
+				on_attach = function(client, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "EslintFixAll",
+					})
+				end,
+			})
+			-- Set up LSPs with capabilities
 
 			lspconfig.ts_ls.setup({
 				capabilities = capabilities,
@@ -64,47 +94,6 @@ return {
 				},
 			})
 
-			--
-			-- List of LSPs to set up
-			local servers = {
-				-- "lua_ls",
-				-- "gopls",
-				"tailwindcss",
-				-- "pyright",
-				-- "html",
-				-- "tailwindcss",
-				-- "rust_analyzer",
-				"prismals",
-				-- "roslyn",
-			}
-
-			require("lspconfig").eslint.setup({
-				on_attach = function(client, bufnr)
-					vim.api.nvim_create_autocmd("BufWritePre", {
-						buffer = bufnr,
-						command = "EslintFixAll",
-					})
-				end,
-			})
-			-- Set up LSPs with capabilities
-			for _, server in ipairs(servers) do
-				lspconfig[server].setup({
-					capabilities = capabilities,
-				})
-			end
-
-			lspconfig.omnisharp.setup({
-				capabilities = capabilities,
-				cmd = {
-					"dotnet",
-					vim.fn.stdpath("data") .. "/mason/packages/omnisharp/libexec/OmniSharp.dll",
-					"--languageserver",
-					"--hostPID",
-					tostring(vim.fn.getpid()),
-				},
-				root_dir = lspconfig.util.root_pattern("*.sln"),
-			})
-
 			lspconfig.denols.setup({
 				capabilities = capabilities,
 				root_dir = lspconfig.util.root_pattern("deno.json", "import_map.json"),
@@ -132,15 +121,6 @@ return {
 				cmd_env = {
 					NO_COLOR = true,
 				},
-			})
-			lspconfig.golangci_lint_ls.setup({
-				capabilities = capabilities,
-			})
-			lspconfig.golangci_lint_ls.setup({
-				capabilities = capabilities,
-			})
-			lspconfig.html.setup({
-				capabilities = capabilities,
 			})
 
 			vim.g.markdown_fenced_languages = {

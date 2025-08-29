@@ -25,11 +25,15 @@ vim.keymap.set("n", "<leader>sts", ":EndHygge<CR>")
 vim.keymap.set("n", "<C-b>", ":b#<CR>")
 
 --open error window lsp
-vim.keymap.set("n", "<leader>le", ":LspDiagnosticsError<CR>")
 vim.keymap.set("n", "<leader>lw", ":LspDiagnosticsWarning<CR>")
 vim.keymap.set("n", "<leader>li", ":LspDiagnosticsInformation<CR>")
 vim.keymap.set("n", "<leader>lc", ":LspDiagnosticsHint<CR>")
 vim.keymap.set("n", "<leader>la", ":LspDiagnosticsToggle<CR>")
+
+--terminal commands
+vim.keymap.set("t", "<C-q>", "<C-\\><C-n>:q<CR>")
+vim.keymap.set("t", "<C-n>", "<C-\\><C-n>")
+vim.keymap.set("n", "<C-q>", ":q<CR>")
 
 --copy current buffer dir
 vim.keymap.set(
@@ -44,3 +48,6 @@ vim.keymap.set("n", "<space>le", function()
 	local bufnr = vim.api.nvim_get_current_buf() -- Get current buffer number
 	vim.diagnostic.open_float(nil, { buf = bufnr + 1 }) -- Open diagnostics for that buffer
 end, { noremap = true, silent = true })
+
+--oil thing
+vim.keymap.set("n", "-", "<CMD>Oil --float<CR>", { desc = "Open parent directory" })

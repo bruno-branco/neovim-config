@@ -70,7 +70,10 @@ return {
 			local harpoon = require("harpoon")
 			local item = harpoon:list():get(9)
 			if not item or not item.value then
-				vim.notify("No terminal registered in slot 9", vim.log.levels.WARN)
+				vim.notify("No terminal registered in slot 9, created a new one", vim.log.levels.WARN)
+				vim.cmd("vsplit | terminal")
+				harpoon:list():replace_at(9) --for list id 9
+				vim.cmd("startinsert")
 				return
 			end
 
