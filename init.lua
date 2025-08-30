@@ -18,3 +18,21 @@ vim.lsp.config("lua_ls", {
 		},
 	},
 })
+
+-- Manage env files
+vim.keymap.set("n", "<leader>oe", function()
+	local cwd = vim.fn.getcwd()
+	local env = cwd .. "/.env"
+	local envlocal = cwd .. "/.env.local"
+
+	local target
+	if vim.fn.filereadable(env) == 1 then
+		vim.cmd("vnew .env")
+	elseif vim.fn.filereadable(envlocal) == 1 then
+		vim.cmd("vnew .env.local")
+	else
+		vim.cmd("!touch .env")
+		vim.notify("Env file does not exist, press enter to create one")
+		vim.cmd("vnew .env")
+	end
+end, {})
